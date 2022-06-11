@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.sunnyweather.android.logic.Repository
+import com.example.sunnyweather.android.logic.dao.PlaceDao
 import com.example.sunnyweather.android.logic.model.Place
 
 class PlaceViewModel : ViewModel() {
@@ -22,4 +23,10 @@ class PlaceViewModel : ViewModel() {
         searchLiveData.value = query
     }
 
+    // 用SharedPreference储存城市信息
+    fun savePlace(place: Place) = Repository.savePlace(place)
+
+    fun getSavedPlace() = Repository.getSavedPlace()
+
+    fun isPlaceSaved() = Repository.isPlaceSaved()
 }

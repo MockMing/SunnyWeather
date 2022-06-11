@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">SunnyWeather</string>
     <string name="inSearchPlaceEdit">输入地址</string>
+    <string name="theSeparator1InNow">|</string>
+    <string name="forecastTitle">预报</string>
+    <string name="lifeIndex">生活指数</string>
+    <string name="catchACold">感冒</string>
+    <string name="dressing">穿衣</string>
+    <string name="realTimeUV">实时紫外线</string>
+    <string name="washingCar">洗车</string>
 </resources>

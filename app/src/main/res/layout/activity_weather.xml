@@ -1,0 +1,30 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/weatherLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none"
+    android:overScrollMode="never"
+    android:visibility="invisible">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 给引入布局加id属性供viewBinding使用 -->
+        <include
+            android:id="@+id/nowLayoutInclude"
+            layout="@layout/now"/>
+
+        <include
+            android:id="@+id/forecastLayoutInclude"
+            layout="@layout/forecast"/>
+
+        <include
+            android:id="@+id/lifeIndexLayoutInclude"
+            layout="@layout/life_index"/>
+
+    </LinearLayout>
+
+</ScrollView>

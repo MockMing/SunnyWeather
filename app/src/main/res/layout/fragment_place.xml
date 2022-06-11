@@ -8,14 +8,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:src="@drawable/bg_place"
-        />
+        android:src="@drawable/bg_place" />
 
     <FrameLayout
         android:id="@+id/actionBarLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/colorPrimary">
+        android:background="@color/purple_500">
 
         <EditText
             android:id="@+id/searchPlaceEdit"
@@ -29,8 +28,7 @@
             android:hint="@string/inSearchPlaceEdit"
             android:background="@drawable/search_bg"
             android:autofillHints="no"
-            android:singleLine="true"
-            />
+            android:singleLine="true" />
 
     </FrameLayout>
 
@@ -39,7 +37,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/actionBarLayout"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 </RelativeLayout>

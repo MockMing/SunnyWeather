@@ -11,10 +11,16 @@ import kotlin.coroutines.suspendCoroutine
 
 object SunnyWeatherNetwork {
 
+    // 搜索城市的接口
     private val placeService = ServiceCreator.create<PlaceService>()
-
     suspend fun searchPlaces(query: String) = placeService.searchPlaces(query).await()
 
+    // 搜索天气信息的接口
+    private val weatherService = ServiceCreator.create<WeatherService>()
+    suspend fun getDailyWeather(lng: String, lat: String) = weatherService.getDailyWeather(lng, lat).await()
+    suspend fun getRealtimeWeather(lng: String, lat: String) = weatherService.getRealtimeWeather(lng, lat).await()
+
+    // 简化Retrofit回调
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->
             enqueue(object : Callback<T> {

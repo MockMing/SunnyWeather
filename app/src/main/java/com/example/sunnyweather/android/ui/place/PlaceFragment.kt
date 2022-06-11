@@ -1,5 +1,7 @@
 package com.example.sunnyweather.android.ui.place
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sunnyweather.android.R
 import com.example.sunnyweather.android.databinding.FragmentPlaceBinding
+import com.example.sunnyweather.android.ui.weather.WeatherActivity
 
 class PlaceFragment : Fragment() {
 
@@ -40,12 +43,29 @@ class PlaceFragment : Fragment() {
         _binding = null
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    @SuppressLint("NotifyDataSetChanged")
+    // 原使用下方法，但已被弃用
+    // override fun onActivityCreated(savedInstanceState: Bundle?) {
+    //        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        // 将SharedPreference中存储的Place地点信息取出并直接跳转（若已有）
+        if (viewModel.isPlaceSaved()) {
+            val place = viewModel.getSavedPlace()
+            val intent = Intent(context, WeatherActivity::class.java).apply {
+                putExtra("location_lng", place.location.lng)
+                putExtra("location_lat", place.location.lat)
+                putExtra("place_name", place.name)
+            }
+            startActivity(intent)
+            activity?.finish()
+            return
+        }
+
         val layoutManager = LinearLayoutManager(activity)
 
         binding.recyclerView.layoutManager = layoutManager
-        adapter = PlaceAdapter(viewModel.placeList)
+        adapter = PlaceAdapter(this, viewModel.placeList)
         binding.recyclerView.adapter = adapter
 
         binding.searchPlaceEdit.addTextChangedListener { editable ->

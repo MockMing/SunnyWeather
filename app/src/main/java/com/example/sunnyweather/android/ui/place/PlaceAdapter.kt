@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunnyweather.android.R
 import com.example.sunnyweather.android.SunnyWeatherApplication
+import com.example.sunnyweather.android.databinding.ActivityWeatherBinding
+import com.example.sunnyweather.android.databinding.FragmentPlaceBinding
 import com.example.sunnyweather.android.databinding.PlaceItemBinding
 import com.example.sunnyweather.android.logic.model.Place
 import com.example.sunnyweather.android.ui.weather.WeatherActivity
@@ -18,7 +20,7 @@ import com.example.sunnyweather.android.ui.weather.WeatherActivity
 class PlaceAdapter(private val fragment: PlaceFragment, private val placeList: List<Place>) : RecyclerView.Adapter<PlaceAdapter.ViewHolder>() {
 
     // 为了在onBindViewHolder中获取parent，在这里延迟定义一个参数存储parent参数
-    lateinit var saveParent: ViewGroup
+    private lateinit var saveParent: ViewGroup
 
     inner class ViewHolder(view: View, binding: PlaceItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val placeName: TextView = binding.placeName
@@ -63,20 +65,32 @@ class PlaceAdapter(private val fragment: PlaceFragment, private val placeList: L
         // 把onCreateViewHolder中的点击事件挪到onBindViewHolder()中可以正常取到position的值
         holder.itemView.setOnClickListener {
             val clickedPosition = holder.absoluteAdapterPosition
-
-            Log.d("CustomLog", "点击的项为：$clickedPosition")
-
             val clickedPlace = placeList[clickedPosition]
-            val intent = Intent(SunnyWeatherApplication.context, WeatherActivity::class.java).apply {
-                putExtra("location_lng", clickedPlace.location.lng)
-                putExtra("location_lat", clickedPlace.location.lat)
-                putExtra("place_name", clickedPlace.name)
-            }
+            val activity = fragment.activity
 
-            // 先将搜索的Place信息保存，再打开响应Activity
+            // 如果是在WeatherActivity中，那么就关闭滑动菜单，给WeatherViewModel赋值新的经纬度坐标和地区名称，然后刷新城市的天气信息
+            if (activity is WeatherActivity) {
+                activity.activityWeatherBinding.drawerLayout.closeDrawers()
+                activity.viewModel.locationLng = clickedPlace.location.lng
+                activity.viewModel.locationLat = place.location.lat
+                activity.viewModel.placeName = place.name
+                activity.refreshWeather()
+            }
+            // 如果是在MainActivity中，就需要进行跳转
+            else {
+                val intent = Intent(SunnyWeatherApplication.context, WeatherActivity::class.java).apply {
+                    putExtra("location_lng", clickedPlace.location.lng)
+                    putExtra("location_lat", clickedPlace.location.lat)
+                    putExtra("place_name", clickedPlace.name)
+                }
+                fragment.startActivity(intent)
+                fragment.activity?.finish()
+            }
+            // 保存当前城市信息
             fragment.viewModel.savePlace(place)
-            fragment.startActivity(intent)
-            fragment.activity?.finish()
+
+
+
 
 
 

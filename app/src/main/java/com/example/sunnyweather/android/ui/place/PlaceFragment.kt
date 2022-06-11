@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.sunnyweather.android.MainActivity
 import com.example.sunnyweather.android.R
 import com.example.sunnyweather.android.databinding.FragmentPlaceBinding
 import com.example.sunnyweather.android.ui.weather.WeatherActivity
@@ -38,8 +40,8 @@ class PlaceFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 
@@ -50,7 +52,9 @@ class PlaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         // 将SharedPreference中存储的Place地点信息取出并直接跳转（若已有）
-        if (viewModel.isPlaceSaved()) {
+        // activity is MainActivity && -> 防止无限循环跳转
+        // 只有当PlaceFragment被嵌入MainActivity中，并且之前已经存在选中的城市，此时才会直接跳转到WeatherActivity
+        if (activity is MainActivity && viewModel.isPlaceSaved()) {
             val place = viewModel.getSavedPlace()
             val intent = Intent(context, WeatherActivity::class.java).apply {
                 putExtra("location_lng", place.location.lng)
@@ -64,8 +68,12 @@ class PlaceFragment : Fragment() {
 
         val layoutManager = LinearLayoutManager(activity)
 
+
         binding.recyclerView.layoutManager = layoutManager
+
+
         adapter = PlaceAdapter(this, viewModel.placeList)
+
         binding.recyclerView.adapter = adapter
 
         binding.searchPlaceEdit.addTextChangedListener { editable ->
